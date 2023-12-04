@@ -1,0 +1,21 @@
+.container.intro-container.intro-container-driver {
+    max-width: none; 
+    padding: 10% 7%;
+    background: black;
+    color: white;
+}
+
+.container.intro-container.intro-container-driver-second {
+    max-width: none; 
+    padding: 2% 7%;
+    background: #f6f8fa;
+    color: black;
+}
+
+.btn.btn-second {
+    background-color: white;
+}
+
+.btn.btn-second.btn-intro > a {
+    color: black;
+}

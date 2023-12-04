@@ -1,0 +1,69 @@
+.notification {
+    --notification-font-icon: 'Font Awesome 6 Free';
+    --notification-color: #283C5A;
+    position: relative;
+    background-color: color-mix(in srgb, var(--notification-color) 7%, white);
+    border-width: 1px;
+    border-style: solid;
+    border-color: var(--notification-color);
+    padding-block: 1.25rem;
+    padding-inline: 3rem 1.25rem;
+    border-radius: 4px;
+    margin-bottom: 20px;
+  }
+  .notification:before {
+    position: absolute;
+    left: 0.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    content: "\f0f3";
+    font-family: var(--notification-font-icon);
+    font-weight: 700;
+    font-size: 1.5rem;
+    width: 2rem;
+    height: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--notification-color);
+  }
+  .notification:after {
+    position: absolute;
+    content: "";
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 2rem;
+    width: 3px;
+    border-radius: 0 3px 3px 0;
+    background-color: var(--notification-color);
+  }
+  
+  .notification.-info {
+    --notification-color: #007bff;
+  }
+  .notification.-info:before {
+    content: "\f05a";
+  }
+  .notification.-warning {
+    --notification-color: #FFC107;
+  }
+  .notification.-warning:before {
+    content: '\f06a';
+  }
+  .notification.-error {
+    --notification-color: #DC3545;
+  }
+  .notification.-error:before {
+    content: "\f071";
+  }
+  .notification.-success {
+    --notification-color: #28A745;
+  }
+  .notification.-success:before {
+    content: "\f058";
+  }
+
+  .notification-header {
+    margin-bottom: 10px;
+  }
