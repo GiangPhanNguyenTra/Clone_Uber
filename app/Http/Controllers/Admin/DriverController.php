@@ -69,4 +69,31 @@ class DriverController extends Controller
 
         return view('admin.driver.vehicle', compact('vehicle'));
     }
+
+    public function deleteDriver($id) {
+        $driver = Driver::find($id);
+        $citizenIdentifyCard = $driver->citizenIdentifyCard;
+        $drivingLicense = $driver->drivingLicense;
+        $vehicle = $driver->vehicle;
+
+        if ($citizenIdentifyCard || $drivingLicense || $vehicle) {
+            $toast_msg = 'Không thể xóa dữ liệu này vì đang được sử dụng bởi dữ liệu khác.';
+            $toast_modify = 'danger';
+
+            return redirect()->back()->with(compact('toast_msg', 'toast_modify'));
+        }
+
+        $driver->delete();
+        $toast_msg = 'Xóa thành công';
+        $toast_modify = 'success';
+
+        return redirect()->back()->with(compact('toast_msg', 'toast_modify'));
+    }
+
+    public function indexRideOfDriver($id) {
+        $driver = Driver::find($id);
+        $rides = $driver->rides;
+    
+        return view('admin.driver-ride.index', compact('rides'));
+    }
 }

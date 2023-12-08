@@ -33,7 +33,6 @@
     position: absolute;
     display: flex;
     list-style: none;
-    background-color: #98a67c;
     bottom:0;
     left: 50%;
     transform: translate(-50%, 0);

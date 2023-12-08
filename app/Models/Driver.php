@@ -11,6 +11,8 @@ use Spatie\Permission\Traits\HasRoles;
 use App\Models\CitizenIdentifyCard;
 use App\Models\DrivingLicense;
 use App\Models\Vehicle;
+use App\Models\DailyEarning;
+use App\Models\Ride;
 
 class Driver extends Authenticatable
 {
@@ -71,5 +73,13 @@ class Driver extends Authenticatable
 
     public function vehicle() {
         return $this->hasOne(Vehicle::class, 'driver_id', 'id');
+    }
+
+    public function rides() {
+        return $this->hasMany(Ride::class, 'driver_id', 'id');
+    }
+
+    public function dailyEarnings() {
+        return $this->hasMany(DailyEarning::class, 'driver_id', 'id');
     }
 }

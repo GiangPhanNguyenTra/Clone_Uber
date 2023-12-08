@@ -62,6 +62,7 @@
             </div>
                 <div class="map-infomation col l-5 m-12 c-12">
                     @if (Auth::guard('driver')->user()->status_code == 0)
+                        <p>* Bạn chưa có cuốc xe nào</p>
                         <p style="margin-bottom: 20px">Vui lòng cập nhật địa chỉ hiện tại của bạn để được nhận cuộc xe, chúng tôi sẽ căn cứ vào địa chỉ này để thông báo khi có cuốc xe từ người dùng </p>
                         <button class="customer-location btn btn-intro">Địa chỉ hiện tại</button>
                         <p class="current-location">Địa chỉ hiện tại: {{Auth::guard('driver')->user()->current_location_name}}</p>

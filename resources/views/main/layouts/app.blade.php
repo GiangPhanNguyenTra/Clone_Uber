@@ -27,6 +27,7 @@
     <link rel="stylesheet" href="/main/css/responsive.css">
     <link rel="stylesheet" href="/main/css/home-driver.css">
     <link rel="stylesheet" href="/main/css/notification.css">
+    <link rel="stylesheet" href="/main/css/rating.css">
     <title>Uber</title>
 </head>
 <body>
@@ -83,7 +84,7 @@
     <script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
     <script src="/main/js/pusher.js"></script>
     <script type="module" src="/main/js/map.js"></script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCoH2I5DRuhIxwT45ilLkEe3AJuJC0gEnQ&libraries=places" defer></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC2liDvUiEP4hzeECRT1ujhw3jCaCqv2Fo&libraries=places" defer></script>
     <script>
       new WOW().init();
     </script>

@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\AuthAdminController;
 use App\Http\Controllers\Admin\HomeAdminController;
 use App\Http\Controllers\Admin\CustomerController;
 use App\Http\Controllers\Admin\DriverController;
+use App\Http\Controllers\Admin\ManageAccAdminController;
 
 //main-page
 use App\Http\Controllers\Main\HomeController;
@@ -19,7 +20,9 @@ use App\Http\Controllers\Main\CitizenIdentifyCardController;
 use App\Http\Controllers\Main\DrivingLicenseController;
 use App\Http\Controllers\Main\VehicleController;
 use App\Http\Controllers\Main\BookingRideController;
+use App\Http\Controllers\Main\RideController;
 
+// event
 use App\Events\NewBookingRideEvent;
 use App\Events\AcceptBookingRideEvent;
 use App\Events\CompleteBookingRideEvent;
@@ -88,6 +91,15 @@ Route::middleware(['auth:customer', 'role:customer,customer'])->group(function()
     // booking ride
     Route::get('/customer/booking-ride', [BookingRideController::class, 'indexBookingRide']);
     Route::post('/customer/booking-ride', [BookingRideController::class, 'handleBookingRide']);
+
+    // rating
+    Route::post('/customer/rating/booking-ride', [BookingRideController::class, 'ratingBookingRide']);
+
+    //index ride
+    Route::get('/customer/ride', [RideController::class, 'indexRidesCustomer']);
+    //sort ride and earning by date
+    Route::post('/customer/ride/sort', [RideController::class, 'sortRideByDay']);
+    Route::get('/customer/detail-ride/{id}', [RideController::class, 'indexDetailRideCustomer']);
     
     Route::get('/customer/logout', [AuthCustomerController::class, 'handleLogout']);
 });
@@ -111,18 +123,19 @@ Route::middleware(['auth:driver', 'role:driver,driver'])->group(function() {
     // complete booking ride
     Route::get('/driver/complete/booking-ride/{id}', [BookingRideController::class, 'completeBookingRide']);
 
+    //index ride
+    Route::get('/driver/ride', [RideController::class, 'indexRidesDriver']);
+    //sort ride and earning by date
+    Route::post('/driver/ride/sort', [RideController::class, 'sortRideByDay']);
+    Route::get('/driver/detail-ride/{id}', [RideController::class, 'indexDetailRideDriver']);
+
     Route::get('/driver/vehicle', [VehicleController::class, 'index']);
     Route::post('/driver/vehicle', [VehicleController::class, 'updateVehicle']);
 
     Route::get('/driver/logout', [AuthDriverController::class, 'handleLogout']);
-
-    Route::get('/event', function() {
-        event(new CompleteBookingRideEvent(3, 1, 1));
-        dd('ok');
-    });
 });
 
-Route::middleware(['auth:admin'])->group(function() {
+Route::middleware(['auth:admin', 'role:admin|super-admin,admin'])->group(function() {
     Route::get('/admin', [HomeAdminController::class, 'index']);
 
     // manage customer
@@ -136,8 +149,22 @@ Route::middleware(['auth:admin'])->group(function() {
     Route::get('/admin/driver/{id}/driving-license', [DriverController::class, 'indexDrivingLicense']);
     Route::get('/admin/driver/{id}/vehicle', [DriverController::class, 'indexVehicle']);
 
-    // manage ride
-    Route::get('/admin/ride', [RideController::class, 'indexRide']);
+    Route::get('/admin/driver/{id}/ride', [DriverController::class, 'indexRideOfDriver']);
 
     Route::get('/admin/logout', [AuthAdminController::class, 'handleLogout']);
+});
+
+Route::middleware(['auth:admin', 'role:super-admin,admin'])->group(function() {
+    //delete driver
+    Route::delete('/admin/driver/{id}/delete', [DriverController::class, 'deleteDriver']);
+    
+    // index admin
+    Route::get('/admin/admin', [ManageAccAdminController::class, 'indexAdmin']);
+    Route::get('/admin/admin/search/{type}/{content}', [ManageAccAdminController::class, 'handleSearchAdmin']);
+
+    Route::get('/admin/admin/create', [ManageAccAdminController::class, 'indexCreateNewAdmin']);
+    Route::post('/admin/admin/store', [ManageAccAdminController::class, 'storeCreateNewAddmin']);
+    Route::post('/admin/admin/edit', [ManageAccAdminController::class, 'indexEditAdmin'])->middleware('validate-super-admin');
+    Route::post('/admin/admin/update', [ManageAccAdminController::class, 'updateAdmin']);
+    Route::post('/admin/admin/delete', [ManageAccAdminController::class, 'deleteAdmin'])->middleware('validate-super-admin');
 });

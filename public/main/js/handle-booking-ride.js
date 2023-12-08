@@ -43,9 +43,9 @@ window.onload = () => {
             lng: parseFloat(endLocationLng.value),
         }
         
-        //initMap(startLocation, endLocation, true);
+        initMap(startLocation, endLocation, true);
     } else {
-        //initMap();
+        initMap();
     }
 };
 
@@ -72,7 +72,7 @@ if (!startLocationLat) {
         if (getCustomerMarker()) {
             var distanceValue = await getDistanceTrip();
             distance.innerHTML = "Quãng đường: " + distanceValue + " km";
-            price.innerHTML = "Tổng tiền: " + distanceValue * 8000 + " VND";
+            price.innerHTML = "Tổng tiền: " + distanceValue * 8.000 + " VND";
         }
     };
     
@@ -97,8 +97,8 @@ if (!startLocationLat) {
                 <input type="hidden" name="end_location_lng" value="${destinationMarker.getPosition().lng()}">
                 <p>Quãng đường: ${distanceValue} km</p>
                 <input type="hidden" name="distance" value="${distanceValue}">
-                <p>Tổng tiền: ${distanceValue * 8000} vnd</p>
-                <input type="hidden" name="price" value="${distanceValue * 8000}">
+                <p>Tổng tiền: ${distanceValue * 8.000} vnd</p>
+                <input type="hidden" name="price" value="${distanceValue * 8.000}">
                 <button style="margin-top: 20px" type="submit" class="submit-btn">Xác nhận</button>
             </form>`;
             
@@ -120,7 +120,7 @@ map.onclick = async () => {
     if (getCustomerMarker()) {
         var distaneValue = await getDistanceTrip();
         distance.innerHTML = "Quãng đường: " + distaneValue + " km";
-        price.innerHTML = "Tổng tiền: " + distaneValue * 8 + " VND";
+        price.innerHTML = "Tổng tiền: " + distaneValue * 8.000 + " VND";
     }
 };
 

@@ -4,21 +4,22 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\User;
+use App\Models\Admin;
 use Illuminate\Support\Facades\Auth;
+use Spatie\Permission\Models\Role;
 
 class ManageAccAdminController extends Controller
 {
     public function indexAdmin() {
-        $admins = User::role('admin')->get();
-
+        $admins = Admin::role('admin')->get();
         return view('admin.account-admin.index', compact('admins'));
     }
 
     public function handleSearchAdmin($type, $content) {
         switch ($type) {
             case 'tên admin':
-                $admins = User::role('admin')->where('name', 'like', '%' . $content . '%')->get();
+                $admins = Admin::role('admin')->where('name', 'like', '%' . $content . '%')->get();
+                
                 break;
             
             default:
@@ -35,7 +36,7 @@ class ManageAccAdminController extends Controller
 
     public function storeCreateNewAddmin(Request $request) {
 
-        if ($request->input('password_admin') == '' || !Auth::attempt(['email' => Auth::user()->email, 'password' => $request->input('password')])) {
+        if ($request->input('password_admin') == '' || !Auth::guard('admin')->attempt(['username' => Auth::guard('admin')->user()->username, 'password' => $request->input('password')])) {
             $toast_msg = 'Mật khẩu admin không đúng';
             $toast_modify = 'danger';
     
@@ -49,7 +50,7 @@ class ManageAccAdminController extends Controller
             'password' => 'required|confirmed',
         ]);
 
-        $admin = User::create([
+        $admin = Admin::create([
             'name' => $request->input('admin_name'),
             'email' => $request->input('user_name'),
             'phone' => $request->input('admin_phone'),
@@ -61,19 +62,19 @@ class ManageAccAdminController extends Controller
     }
 
     public function indexEditAdmin(Request $request) {
-        $admin = User::find($request->input('admin_id')); 
+        $admin = Admin::role('admin')->where('id', $request->input('admin_id'))->first();
 
         return view('admin.account-admin.edit', compact('admin'));
     }
 
     public function updateAdmin(Request $request) {
-        User::where('id', $request->input('admin_id'))->update(['verify' => $request->input('verify')]);
+        $admin = Admin::role('admin')->where('id', $request->input('admin_id'))->update(['verify' => $request->input('verify')]);
         
         return redirect('/admin/admin')->with('toast_msg', 'Cập nhật thành công');
     }
 
     public function deleteAdmin(Request $request) {
-        User::where('id', $request->input('admin_id'))->delete();
+        $admin = Admin::role('admin')->where('id', $request->input('admin_id'))->delete();
 
         return redirect('/admin/admin')->with('toast_msg', 'Admin đã được xóa thành công');
     }   

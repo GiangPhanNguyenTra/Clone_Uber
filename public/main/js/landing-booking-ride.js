@@ -37,10 +37,10 @@ window.onload = () => {
             lat: parseFloat(endLocationLat.value),
             lng: parseFloat(endLocationLng.value),
         }
-        
-        // initMap(startLocation, endLocation, true);
+    
+        initMap(startLocation, endLocation, true);
     } else {
-        // initMap();
+        initMap();
     }
 };
 

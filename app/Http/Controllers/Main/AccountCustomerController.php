@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\FormAccountCustomerUpdateRequest;
 use File;
+use Illuminate\Support\Facades\DB;
 
 class AccountCustomerController extends Controller
 {
@@ -33,29 +34,35 @@ class AccountCustomerController extends Controller
                 $avata = null;
             }
         }
-        
-        $customer->update([
-            'name' => $request->input('name'),
-            'phone' => $request->input('phone'),
-            'address' => $request->input('street_name').', '.$request->input('ward').', '.$request->input('district').', '.$request->input('city'),
-            'gender' => $request->input('gender'),
-            'avata' =>  $avata
-        ]);
+        DB::beginTransaction();
+        try {   
+            $customer->update([
+                'name' => $request->input('name'),
+                'phone' => $request->input('phone'),
+                'address' => $request->input('street_name').', '.$request->input('ward').', '.$request->input('district').', '.$request->input('city'),
+                'gender' => $request->input('gender'),
+                'avata' =>  $avata
+            ]);
+    
+            // update lại hình trong local
+            if ($request->hasFile('img-upload')) {
+                $old_file = 'upload/images/customer-avata/'.$customer->avata;
+    
+                if (File::exists($old_file)) {
+                    File::delete($old_file);
+                } 
+                $request->file('img-upload')->move('upload/images/customer-avata', $request->file('img-upload')->getClientOriginalName());
+            }
+            
+            DB::commit();
 
-        // update lại hình trong local
-
-        if ($request->hasFile('img-upload')) {
-            $old_file = 'upload/images/customer-avata/'.$customer->avata;
-
-            if (File::exists($old_file)) {
-                File::delete($old_file);
-            } 
-            $request->file('img-upload')->move('upload/images/customer-avata', $request->file('img-upload')->getClientOriginalName());
+            $toast_msg = 'tài khoản đã được cập nhật';
+            $toast_modify = 'toast-success';
+            return redirect()->back()->with(compact('toast_msg', 'toast_modify'));
+        } catch (\Exception $e) {
+            DB::rollBack();
+            throw new Exception($e->getMessage());
         }
-
-        $toast_msg = 'tài khoản đã được cập nhật';
-        $toast_modify = 'toast-success';
-        return redirect()->back()->with(compact('toast_msg', 'toast_modify'));
     }
 
     public function changePassword(Request $request) {

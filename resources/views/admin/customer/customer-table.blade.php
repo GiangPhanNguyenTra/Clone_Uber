@@ -12,5 +12,9 @@
                         <strong class="text-status-0">chưa kích hoạt </strong>
                     @endif
                 </td>
+                <td>
+                    <a class="btn btn-warning  btn-sm" href="/admin/customer/{{$customer->id}}/edit">Edit</a>
+                    <a class="btn btn-danger  btn-sm btn-toast-del-customer" href="#" data-bs-toggle="modal" data-bs-target="#exampleModal" value="{{$customer->id}}">Delete</a>
+                </td>
             </tr>
           @endforeach

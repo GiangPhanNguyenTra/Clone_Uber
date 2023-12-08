@@ -14,6 +14,8 @@ use App\Events\CompleteBookingRideEvent;
 use App\Models\Driver;
 use App\Models\Customer;
 Use \Carbon\Carbon;
+use App\Models\DailyEarning;
+use Illuminate\Support\Facades\DB;
 
 class BookingRideController extends Controller
 {
@@ -49,7 +51,7 @@ class BookingRideController extends Controller
 
         $startLocationLat = $request->input('start_location_lat');
         $startLocationLng = $request->input('start_location_lng');
-        $minDistance = 0;
+        $minDistance = PHP_INT_MAX;
         $closestDriver = null;
 
         foreach($drivers as $driver) {
@@ -64,7 +66,7 @@ class BookingRideController extends Controller
                 }
             }
         }
-        
+
         if ($closestDriver) {
             $ride = Ride::create([
                 'start_location_name' => $request->input('start_location_name'),
@@ -121,11 +123,14 @@ class BookingRideController extends Controller
 
     public function updateCurrentLocationDriver(Request $request) {
         $driver = Auth::guard('driver')->user();
-        $driver->update([
-            'current_location_name' => $request->name,
-            'current_location_lat' => $request->lat,
-            'current_location_lng' => $request->lng
-        ]);
+        
+        if ($request->name && $request->lat && $request->lng) {
+            $driver->update([
+                'current_location_name' => $request->name,
+                'current_location_lat' => $request->lat,
+                'current_location_lng' => $request->lng
+            ]);
+        }
         
         return response()->json([
             'message' => 'ok em ơi',
@@ -163,24 +168,68 @@ class BookingRideController extends Controller
 
     public function completeBookingRide($id) {
         $ride = Ride::find($id);
-        $ride->update([
-            'status_code' => RideStatus::COMPLETED,
-            'status_description' => RideStatus::getDescription(RideStatus::COMPLETED)
-        ]);
 
-        $driver = Driver::find($ride->driver_id);
-        $driver->update([
-            'status_code' => DriverStatus::FREE,
-            'status_description' => DriverStatus::getDescription(DriverStatus::FREE)
-        ]);
+        DB::beginTransaction();
+        try {
+            $ride->update([
+                'status_code' => RideStatus::COMPLETED,
+                'status_description' => RideStatus::getDescription(RideStatus::COMPLETED),
+                'end_time' => Carbon::now()
+            ]);
+    
+            $driver = Driver::find($ride->driver_id);
+            $driver->update([
+                'status_code' => DriverStatus::FREE,
+                'status_description' => DriverStatus::getDescription(DriverStatus::FREE)
+            ]);
+    
+            $customer = Customer::find($ride->customer_id);
+            $customer->update([
+                'is_on_ride' => false,
+            ]);
+    
+            $currentDailyEarning = DailyEarning::where('date', Carbon::now()->toDateString())
+                                                ->where('driver_id', $driver->id)
+                                                ->first();
+            if ($currentDailyEarning) {
+                $currentDailyEarning->update([
+                    'total_rides' => $currentDailyEarning->total_rides + 1,
+                    'total_earnings' => $currentDailyEarning->total_earnings + $ride->price,
+                ]);
+            } else {
+                DailyEarning::create([
+                    'total_rides' => 1,
+                    'total_earnings' => $ride->price,
+                    'date' => Carbon::today(),
+                    'driver_id' => $driver->id,
+                ]);
+            }
+            DB::commit();
+            event(new CompleteBookingRideEvent($customer->id, $ride, $driver));
 
-        $customer = Customer::find($ride->customer_id);
-        $customer->update([
-            'is_on_ride' => false,
-        ]);
-
-        event(new CompleteBookingRideEvent($customer->id, $ride, $driver));
-        
-        
+            return redirect('/driver/detail-ride/'.$ride->ride_id);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            throw new Exception($e->getMessage());
+        }
     }
+
+    public function ratingBookingRide(Request $request) {
+        DB::beginTransaction();
+        try {
+            $ride = Ride::find(intval($request->input('ride_id')));
+
+            $ride->update([
+                'rating' => $request->input('rating'),
+                'comment' => $request->input('comment')
+            ]);
+            
+            DB::commit();
+            return redirect('/customer/detail-ride/'.$ride->ride_id);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            throw new Exception($e->getMessage());
+        }
+    }
+    
 }

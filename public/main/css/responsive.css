@@ -599,7 +599,7 @@
         right: 400px;
     }
     .notifier-fixed {
-        width: 100%;
+        width: 85%;
         right: -100%
     }
     .notifier-fixed-close-btn {
@@ -645,7 +645,7 @@
         margin-right: 25px;
     }
     .section-nav-account {
-        width: 93%;
+        width: 97%;
     }
     .order-reciver,
     .order-date,

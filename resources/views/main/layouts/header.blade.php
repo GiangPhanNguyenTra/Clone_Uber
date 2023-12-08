@@ -97,6 +97,13 @@
                                     @endif
                                 @endif
                                 <li class="user-dropdown-item">
+                                    <a href="/{{$guard_name}}/ride" class="user-menu-link">
+                                        <i class="fa-solid fa-file-invoice"></i>
+                                        <span>Lịch sử cuốc xe</span>
+                                    </a>
+                                </li>
+                                <li class="line"></li>
+                                <li class="user-dropdown-item">
                                     <a href="/{{Auth::guard($guard_name)->user()->getRoleNames()->first()}}/logout" class="user-menu-link">
                                         <i class="fa-solid fa-right-from-bracket"></i>
                                         <span>Đăng xuất</span>
@@ -208,6 +215,13 @@
                                         @endif
                                     @endif
                                     <li class="user-dropdown-item">
+                                        <a href="/{{$guard_name}}/ride" class="user-menu-link">
+                                            <i class="fa-solid fa-file-invoice"></i>
+                                            <span>Lịch sử cuốc xe</span>
+                                        </a>
+                                    </li>
+                                    <li class="line"></li>
+                                    <li class="user-dropdown-item">
                                         <a href="/{{Auth::guard($guard_name)->user()->getRoleNames()->first()}}/logout" class="user-menu-link">
                                             <i class="fa-solid fa-right-from-bracket"></i>
                                             <span>Đăng xuất</span>
@@ -307,17 +321,25 @@
                                             <span>Giấy tờ</span>
                                         </a>
                                     </li>
+                                    <li>
+                                        <a href="/driver/vehicle" class="user-menu-link">
+                                            <span>Phương tiện</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="/driver/landing-booking-ride" class="user-menu-link">
+                                            <span>Cuốc xe</span>
+                                        </a>
+                                    </li>
                                 @endif
-                                <li class="user-dropdown-item">
-                                            <a href="/driver/vehicle" class="user-menu-link">
-                                                <i class="fa-solid fa-motorcycle"></i>
-                                                <span>Phương tiện</span>
-                                            </a>
-                                        </li>
-                                        <li class="line"></li>
-                               <li>
-                                    <a href="/order" class="user-menu-link">
-                                        <span>Đơn hàng của tôi</span>
+                                <li>
+                                    <a href="/customer/booking-ride" class="user-menu-link">
+                                        <span>Đặt xe</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="/{{$guard_name}}/ride" class="user-menu-link">
+                                        <span>Lịch sử cuốc xe</span>
                                     </a>
                                </li>
                                <li>

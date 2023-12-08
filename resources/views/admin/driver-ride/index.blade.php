@@ -41,7 +41,7 @@
     <!-- Basic Bootstrap Table -->
 <div class="card">
     <div class="card-header">
-        <h5>Tài Khoản khách hàng</h5>
+        <h5>Lịch sử cuốc xe</h5>
         <div class="form-search d-flex">
             <select id="smallSelect" class="form-select form-select-sm search-type">
               <option value="tên khách hàng">Tên khách hàng</option>
@@ -54,16 +54,22 @@
       <table class="table">
         <thead>
           <tr>
-            <th>Mã khách hàng</th>
+            <th>Mã cuốc xe</th>
             <th>Tên khách hàng</th>
-            <th>Email</th>
             <th>Số điện thoại</th>
-            <th>địa chỉ</th>
-            <th>Trạng thái tài khoản</th>
+            <th>Điểm đi</th>
+            <th>Điểm đến</th>
+            <th>Quảng đường</th>
+            <th>Thời gian bắt đầu</th>
+            <th>Thời gian kết thúc</th>
+            <th>Trạng thái</th>
+            <th>Tổng tiền</th>
+            <th>Đánh giá</th>
+            <th>Bình luận</th>
           </tr>
         </thead>
         <tbody class="table-border-bottom-0">
-            @include('admin.customer.customer-table')
+            @include('admin.driver-ride.driver-ride-table')
         </tbody>
       </table>
     </div>

@@ -10,15 +10,15 @@
           x
         </button>
       </div>
-      <form class="form-delete" action="" method="post">
+      <form class="form-delete" action="" method="post">>
         @csrf
         @method('DELETE')
         <div class="modal-body">
-          <p>Bạn có thực sự muốn xóa sản phẩm này ??</p>
+          <p>Bạn có thực sự muốn xóa tài xế này ??</p>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-          <button type="submit" class="btn btn-primary btn-submit-del">Đúng vậy</button>
+          <button type="submit" class="btn btn-primary btn-submit-del">Vâng</button>
         </div>
       </form>
     </div>
@@ -27,7 +27,7 @@
 {{-- /modal popup --}}
 
 {{-- toast --}}
-<div class="toast bg-success align-items-center" role="alert" aria-live="assertive" aria-atomic="true">
+<div class="toast bg-{{session()->get('toast_modify') ?? session()->get('toast_modify')}} align-items-center" role="alert" aria-live="assertive" aria-atomic="true">
   <div class="d-flex">
     <div class="toast-body">
       @if (session()->has('toast_msg'))

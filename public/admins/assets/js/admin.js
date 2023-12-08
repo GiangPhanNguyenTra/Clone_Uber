@@ -2,7 +2,7 @@
 const toastBody = document.querySelector('.toast-body');
 const toast = document.querySelector('.toast');
 const btnsToastDelCate = document.querySelectorAll('.btn-toast-del-cate');
-const btnsToastDelPro = document.querySelectorAll('.btn-toast-del-pro');
+const btnsToastDelDriver = document.querySelectorAll('.btn-toast-del-driver');
 const formDel = document.querySelector('.form-delete');
 const btnSubmitUpdate = document.querySelector('.js-btn-update');
 const selectInputCate = document.querySelector('.js-select-input-cate');
@@ -22,7 +22,7 @@ const xhttp = new XMLHttpRequest();
 
 
 const formActionDelCate = '/admin/category/';
-const formActionDelPro = '/admin/product/';
+const formActionDelDriver = '/admin/driver/';
 
 function checkToast() {
     if (toastBody) {
@@ -47,11 +47,11 @@ btnsToastDelCate.forEach((btnToastDelCate) => {
     }
 })
 
-btnsToastDelPro.forEach((btnToastDelPro) => {
-    btnToastDelPro.onclick = () => {
-        var valueId = btnToastDelPro.getAttribute('value');
+btnsToastDelDriver.forEach((btnToastDelDriver) => {
+    btnToastDelDriver.onclick = () => {
+        var valueId = btnToastDelDriver.getAttribute('value');
 
-        formDel.action = formActionDelPro + valueId;
+        formDel.action = formActionDelDriver + valueId + '/delete';
     }
 })
 

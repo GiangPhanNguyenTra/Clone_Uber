@@ -40,23 +40,20 @@
               <div data-i18n="Without navbar">Tài xế</div>
             </a>
           </li>
-          <li class="menu-item">
-            <a href="/admin/ride" class="menu-link">
-              <div data-i18n="Without navbar">Chuyến xe</div>
-            </a>
-          </li>
-          <li class="menu-item" style="">
-            <a href="javascript:void(0);" class="menu-link menu-toggle">
-              <div data-i18n="Layouts">Tài Khoản</div>
-            </a>
-            <ul class="menu-sub">
-              <li class="menu-item">
-                <a href="/admin/admin" class="menu-link">
-                  <div data-i18n="Without navbar">Admin</div>
-                </a>
-              </li>     
-            </ul>
-        </li>
+          @if (Auth::guard('admin')->user()->getRoleNames()->first() == 'super-admin')
+            <li class="menu-item" style="">
+              <a href="javascript:void(0);" class="menu-link menu-toggle">
+                <div data-i18n="Layouts">Tài Khoản</div>
+              </a>
+              <ul class="menu-sub">
+                <li class="menu-item">
+                  <a href="/admin/admin" class="menu-link">
+                    <div data-i18n="Without navbar">Admin</div>
+                  </a>
+                </li>     
+              </ul>
+            </li>
+          @endif
         </ul>
     </ul>
   </aside>

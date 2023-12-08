@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\FormAccountDriverUpdateRequest;
 use File;
+use Illuminate\Support\Facades\DB;
 
 class AccountDriverController extends Controller
 {
@@ -22,7 +23,6 @@ class AccountDriverController extends Controller
         $driver = Auth::guard('driver')->user();
 
         // check file upload
-
         if ($request->hasFile('img-upload')) {
             $avata =  $request->file('img-upload')->getClientOriginalName();
         } else {
@@ -32,28 +32,37 @@ class AccountDriverController extends Controller
                 $avata = null;
             }
         }
-        
-        $driver->update([
-            'name' => $request->input('name'),
-            'phone' => $request->input('phone'),
-            'gender' => $request->input('gender'),
-            'avata' =>  $avata
-        ]);
 
-        // update lại hình trong local
+        DB::beginTransaction();
+        try { 
+            $driver->update([
+                'name' => $request->input('name'),
+                'phone' => $request->input('phone'),
+                'gender' => $request->input('gender'),
+                'avata' =>  $avata
+            ]);
+    
+            // update lại hình trong local
+    
+            if ($request->hasFile('img-upload')) {
+                $old_file = 'upload/images/driver-avata/'.$driver->avata;
+    
+                if (File::exists($old_file)) {
+                    File::delete($old_file);
+                } 
+                $request->file('img-upload')->move('upload/images/driver-avata', $request->file('img-upload')->getClientOriginalName());
+            }
+            
+            DB::commit();
 
-        if ($request->hasFile('img-upload')) {
-            $old_file = 'upload/images/driver-avata/'.$driver->avata;
-
-            if (File::exists($old_file)) {
-                File::delete($old_file);
-            } 
-            $request->file('img-upload')->move('upload/images/driver-avata', $request->file('img-upload')->getClientOriginalName());
+            $toast_msg = 'tài khoản đã được cập nhật';
+            $toast_modify = 'toast-success';
+            return redirect()->back()->with(compact('toast_msg', 'toast_modify'));
+        } catch (\Exception $e) {
+            DB::rollBack();
+            throw new Exception($e->getMessage());
         }
-
-        $toast_msg = 'tài khoản đã được cập nhật';
-        $toast_modify = 'toast-success';
-        return redirect()->back()->with(compact('toast_msg', 'toast_modify'));
+        
     }
 
     public function changePassword(Request $request) {

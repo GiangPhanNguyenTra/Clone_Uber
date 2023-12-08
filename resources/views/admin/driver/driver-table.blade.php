@@ -12,13 +12,32 @@
                     @endif
                 </td>
                 <td>
-                    <a class="btn btn-info btn-sm" href="/admin/driver/{{$driver->id}}/citizen-identifycard">View</a>
+                    @if ($driver->citizenIdentifycard)
+                        <a class="btn btn-info btn-sm" href="/admin/driver/{{$driver->id}}/citizen-identifycard">View</a>
+                    @else
+                        x
+                    @endif
                 </td>
                 <td>
-                    <a class="btn btn-info btn-sm" href="/admin/driver/{{$driver->id}}/driving-license">View</a>
+                    @if ($driver->drivingLicense)
+                        <a class="btn btn-info btn-sm" href="/admin/driver/{{$driver->id}}/driving-license">View</a>
+                    @else
+                        x
+                    @endif
                 </td>
                 <td>
-                    <a class="btn btn-info btn-sm" href="/admin/driver/{{$driver->id}}/vehicle">View</a>
+                    @if ($driver->vehicle)
+                        <a class="btn btn-info btn-sm" href="/admin/driver/{{$driver->id}}/vehicle">View</a>
+                    @else
+                        x
+                    @endif
+                </td>
+                <td>
+                    <a class="btn btn-info btn-sm" href="/admin/driver/{{$driver->id}}/ride">Lịch sử cuốc xe</a>
+                </td>
+                <td>
+                    <a class="btn btn-warning  btn-sm" href="/admin/driver/{{$driver->id}}/edit">Edit</a>
+                    <a class="btn btn-danger  btn-sm btn-toast-del-driver" href="#" data-bs-toggle="modal" data-bs-target="#exampleModal" value="{{$driver->id}}">Delete</a>
                 </td>
             </tr>
           @endforeach
