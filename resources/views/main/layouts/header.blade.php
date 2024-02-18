@@ -1,10 +1,23 @@
+@php
+    if (Auth::guard('customer')->check()) {
+        $guard_name = 'customer';
+    } else if (Auth::guard('driver')->check()) {
+        $guard_name = 'driver';
+    } else {
+        $guard_name = '';
+    }
+@endphp
 <div class="header">
     <!-- header unfixed-->
     <div class="header-unfixed container header-container">
         <div class="header__menu">
             <ul class="header__menu-main">
                 <li><a href="/">Home</a></li>
-                <li><a href="/customer/booking-ride">ride</a></li>
+                @if (Auth::guard($guard_name)->check() && Auth::guard($guard_name)->user()->getRoleNames()->first() == 'driver')
+                    <li><a href="/driver/landing-booking-ride">ride</a></li>
+                @else
+                    <li><a href="/customer/booking-ride">ride</a></li>
+                @endif
                 <li><a href="/home/driver">Drive</a></li>
                 <li><a href="#">About</a>
                     <ul class="header__menu-subone">
@@ -26,15 +39,6 @@
                 <span class="cart-count">(0)</span>
             </div>
             <div class="header__right-login">
-                @php
-                    if (Auth::guard('customer')->check()) {
-                        $guard_name = 'customer';
-                    } else if (Auth::guard('driver')->check()) {
-                        $guard_name = 'driver';
-                    } else {
-                        $guard_name = '';
-                    }
-                @endphp
                 @if (Auth::guard($guard_name)->check())
                     <span class="user-tie"><i class="fa-solid fa-user"></i></span>
                     <div class="user-dropdown-menu-contain">
@@ -130,7 +134,11 @@
             <div class="header__menu header__menu-fixed">
                 <ul class="header__menu-main header__menu-main-fixed">
                     <li><a href="/">Home</a></li>
-                    <li><a href="/customer/booking-ride">ride</a></li>
+                    @if (Auth::guard($guard_name)->check() && Auth::guard($guard_name)->user()->getRoleNames()->first() == 'driver')
+                        <li><a href="/driver/landing-booking-ride">ride</a></li>
+                    @else
+                        <li><a href="/customer/booking-ride">ride</a></li>
+                    @endif
                     <li><a href="/home/driver">Drive</a></li>
                     <li><a href="#">About</a>
                         <ul class="header__menu-subone header__menu-subone-fixed">
