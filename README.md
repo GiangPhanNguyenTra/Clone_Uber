@@ -14,10 +14,10 @@
       <a href="#requirements"> Requirements</a>
       <ul>
         <li><a href="#prerequisites">Puser</a></li>
-        <li><a href="#installation">Google Map API Services</a></li>
+        <li><a href="#google-map-api-services">Google Map API Services</a></li>
       </ul>
     </li>
-    <li><a href="#usage">Usage</a></li>
+    <li><a href="#ưorkflow">Workflow</a></li>
     <li><a href="#roadmap">Roadmap</a></li>
     <li><a href="#contributing">Contributing</a></li>
     <li><a href="#license">License</a></li>
@@ -89,3 +89,52 @@ Geocoding API will perform conversions between text addresses and geographic coo
 </div>
 
 Note that these services are not completely free. Although the quota of services can be quite "generous", if used in a development environment that requires multiple debugging, it will be easy to exceed the prescribed quota and then Google will lower the limit. quota and required to pay a fee to continue using the service.
+
+## Workflow
+1\. The customer opens the ride-hailing app and selects the current address, and the system will automatically retrieve the address.
+<div style="margin: 20px 0;">
+    <img src="./public/readme/workflow/customer/customer-1.png" alt="Logo" width="100%">
+</div>
+
+2\. The customer will enter the destination or select the destination on the map. The app will calculate the distance and the fare the customer has to pay for the trip.
+
+<div style="margin: 20px 0;">
+    <img src="./public/readme/workflow/customer/customer-2.png" alt="Logo" width="100%">
+</div>
+
+3\. The customer confirms the ride.
+<div style="margin: 20px 0;">
+    <img src="./public/readme/workflow/customer/customer-3.png" alt="Logo" width="100%">
+</div>
+
+4\. Meanwhile, the driver who wants to accept the ride must update their current location.
+
+<div style="margin: 20px 0;">
+    <img src="./public/readme/workflow/driver/driver-1.png" alt="Logo" width="100%">
+</div>
+
+5\. Oh, the driver just received a ride request from the previous customer. A popup appears showing the ride details, including the pickup location, destination, customer's name, and more. The driver who will receive the ride is determined based on the current distance between them and the customer. The driver with the shortest distance will be assigned the ride, while the other drivers will be placed in a queue.
+
+<div style="margin: 20px 0;">
+    <img src="./public/readme/workflow/driver/driver-2.png" alt="Logo" width="100%">
+</div>
+
+4\. The ride is in progress.
+<div style="margin: 20px 0;">
+    <img src="./public/readme/workflow/driver/driver-3.png" alt="Logo" width="100%">
+</div>
+
+5\.The ride is completed, and the customer rates the ride.
+<div style="margin: 20px 0;">
+    <img src="./public/readme/workflow/customer/customer-6.png" alt="Logo" width="100%">
+</div>
+
+6\.The customer can review the ride
+<div style="margin: 20px 0;">
+    <img src="./public/readme/workflow/customer/customer-7.png" alt="Logo" width="100%">
+</div>
+
+7\. And the driver can also review their ride.
+<div style="margin: 20px 0;">
+    <img src="./public/readme/workflow/driver/driver-4.png" alt="Logo" width="100%">
+</div>
