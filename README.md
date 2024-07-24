@@ -17,12 +17,8 @@
         <li><a href="#google-map-api-services">Google Map API Services</a></li>
       </ul>
     </li>
-    <li><a href="#ưorkflow">Workflow</a></li>
-    <li><a href="#roadmap">Roadmap</a></li>
-    <li><a href="#contributing">Contributing</a></li>
-    <li><a href="#license">License</a></li>
-    <li><a href="#contact">Contact</a></li>
-    <li><a href="#acknowledgments">Acknowledgments</a></li>
+    <li><a href="#workflow">Workflow</a></li>
+    <li><a href="#installation">Installation</a></li>
   </ol>
 </details>
 
@@ -91,7 +87,9 @@ Geocoding API will perform conversions between text addresses and geographic coo
 Note that these services are not completely free. Although the quota of services can be quite "generous", if used in a development environment that requires multiple debugging, it will be easy to exceed the prescribed quota and then Google will lower the limit. quota and required to pay a fee to continue using the service.
 
 ## Workflow
+
 1\. The customer opens the ride-hailing app and selects the current address, and the system will automatically retrieve the address.
+
 <div style="margin: 20px 0;">
     <img src="./public/readme/workflow/customer/customer-1.png" alt="Logo" width="100%">
 </div>
@@ -103,6 +101,7 @@ Note that these services are not completely free. Although the quota of services
 </div>
 
 3\. The customer confirms the ride.
+
 <div style="margin: 20px 0;">
     <img src="./public/readme/workflow/customer/customer-3.png" alt="Logo" width="100%">
 </div>
@@ -120,21 +119,71 @@ Note that these services are not completely free. Although the quota of services
 </div>
 
 4\. The ride is in progress.
+
 <div style="margin: 20px 0;">
     <img src="./public/readme/workflow/driver/driver-3.png" alt="Logo" width="100%">
 </div>
 
 5\.The ride is completed, and the customer rates the ride.
+
 <div style="margin: 20px 0;">
     <img src="./public/readme/workflow/customer/customer-6.png" alt="Logo" width="100%">
 </div>
 
 6\.The customer can review the ride
+
 <div style="margin: 20px 0;">
     <img src="./public/readme/workflow/customer/customer-7.png" alt="Logo" width="100%">
 </div>
 
 7\. And the driver can also review their ride.
+
 <div style="margin: 20px 0;">
     <img src="./public/readme/workflow/driver/driver-4.png" alt="Logo" width="100%">
 </div>
+
+## Installation
+
+1. Clone the repo
+
+```sh
+   git clone https://github.com/ptduy14/ride-hailing-service-web-app.git
+```
+2. Compose
+```sh
+   composer install
+```
+3. Generate Key
+```sh
+   php artisan key:generate
+```
+4. Setup Database
+
+Open the file .env
+(Assuming wamp or xampp)
+Edit values to match your database
+Add empty database using phpmyadmin
+Include that name in the DB_DATABASE
+
+```sh
+  DB_HOST=localhost
+  DB_DATABASE=your_db_name
+  DB_USERNAME=root
+  DB_PASSWORD=
+```
+
+5. Get Tables
+
+```sh
+  php artisan migrate
+```
+
+6. Run the project
+
+```sh
+  php artisan serve
+```
+
+
+
+
