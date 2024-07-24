@@ -50,6 +50,7 @@ Enable the following API services in the Library section of Projects registered 
 
 <img src="./public/readme/gg-map-api-services/map.png" alt="Logo" width="100%">
 Maps JavaScript API helps integrate and leverage the diverse features of Google Maps directly into web applications. This API allows you to display an interactive map on your website, which not only helps users identify locations but also provides an interactive experience and detailed geographic information.
-<div style="padding: 10px"></div>
+
+<br>
 
 <img src="./public/readme/gg-map-api-services/map.png" alt="Logo" width="100%">
