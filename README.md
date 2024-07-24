@@ -1,13 +1,15 @@
 ## Ride Hailing Service Web App built with Laravel Framework
 
 ## About Project
-Developed a user-friendly ride-hailing website to eciently connect drivers and passengers using Laravel MVC
+Developed a user-friendly ride-hailing website to eciently connect drivers and passengers using Laravel.
 
-<p>I will update document soon.</p>
 
 ## Features
-Waiting for update
-
+* Real-time booking and trip notifications.
+* Distance calculation and display.
+* Mapping of pick-up and drop-off points.
+* Trip rating.
+* Account management, booking history.
 ## Requirement
 
 ### PHP & Package
