@@ -48,9 +48,12 @@ See the registration and initialization process here [Instructions for initializ
 
 Enable the following API services in the Library section of Projects registered with Google:
 
-<img src="./public/readme/gg-map-api-services/map.png" alt="Logo" width="100%">
+<div style="margin-top: 20px;">
+    <img src="./public/readme/gg-map-api-services/map.png" alt="Logo" width="100%">
+</div>
+
 Maps JavaScript API helps integrate and leverage the diverse features of Google Maps directly into web applications. This API allows you to display an interactive map on your website, which not only helps users identify locations but also provides an interactive experience and detailed geographic information.
 
-<br>
-
-<img src="./public/readme/gg-map-api-services/map.png" alt="Logo" width="100%">
+<div style="margin-top: 20px;">
+    <img src="./public/readme/gg-map-api-services/map.png" alt="Logo" width="100%">
+</div>
