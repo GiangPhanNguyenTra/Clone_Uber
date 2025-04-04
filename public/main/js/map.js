@@ -1,257 +1,203 @@
 let map;
 let customerMarker;
 let destinationMarker;
-let geocoder;
 let infowindow;
-let directionsService;
-let directionsRenderer;
-let autocomplete;
 
 function initMap(startLocation = null, endLocation = null, readOnly = null) {
-    if (readOnly) {
-        // Đặt tọa độ ban đầu cho thành phố Cần Thơ
-        const canThoCoordinates = { lat: 10.0470933, lng: 105.7681161 };
-        
-        map = new google.maps.Map(document.getElementById("map"), {
-            center: canThoCoordinates,
-            zoom: 18,
-            draggable: false,
-            zoomControl: false,
-            scrollwheel: false,
-            disableDoubleClickZoom: true
-        });
+    // Set initial coordinates for Ho Chi Minh City
+    const hoChiMinhCoordinates = [10.7769, 106.7009];
 
-         // khởi tạo các đối tượng cần thiết
-        geocoder = new google.maps.Geocoder();
-        infowindow = new google.maps.InfoWindow();
-        directionsService = new google.maps.DirectionsService();
-        directionsRenderer = new google.maps.DirectionsRenderer();
+    // Create Leaflet map
+    map = L.map("map", {
+        center: hoChiMinhCoordinates,
+        zoom: 18,
+    });
+
+    // Add OpenStreetMap tile layer
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        attribution:
+            '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    }).addTo(map);
+
+    if (readOnly) {
+        map.dragging.disable();
+        map.touchZoom.disable();
+        map.doubleClickZoom.disable();
+        map.scrollWheelZoom.disable();
+        map.boxZoom.disable();
+        map.keyboard.disable();
 
         placeMarker(startLocation, true);
         placeMarker(endLocation);
-
     } else {
-        // Đặt tọa độ ban đầu cho thành phố Cần Thơ
-        const canThoCoordinates = { lat: 10.0470933, lng: 105.7681161 };
-
-        map = new google.maps.Map(document.getElementById("map"), {
-            center: canThoCoordinates,
-            zoom: 18,
-        });
-
-        // khởi tạo các đối tượng cần thiết
-        geocoder = new google.maps.Geocoder();
-        infowindow = new google.maps.InfoWindow();
-        directionsService = new google.maps.DirectionsService();
-        directionsRenderer = new google.maps.DirectionsRenderer();
-
-        // sự kiện lấy vị trí hiện tại của người dùng
-        const getCurrentCustomerLocation = document.querySelector(".customer-location");
+        // Get current customer location
+        const getCurrentCustomerLocation =
+            document.querySelector(".customer-location");
         getCurrentCustomerLocation.addEventListener("click", () => {
-            // Thử lấy vị trí HTML5
+            // Try HTML5 geolocation
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(
                     (position) => {
-                        const pos = {
-                            lat: position.coords.latitude,
-                            lng: position.coords.longitude,
-                        };
+                        const pos = [
+                            position.coords.latitude,
+                            position.coords.longitude,
+                        ];
 
-                        infowindow.setPosition(pos);
-                        infowindow.setContent("Current Location");
-                        infowindow.open(map);
-                        map.setCenter(pos);
+                        map.setView(pos, 18);
                         placeMarker(pos, true);
 
-                        // Lấy địa chỉ từ vị trí
-                        reverseGeocode(geocoder, pos, infowindow);
+                        // Get address from location
+                        reverseGeocode(pos);
 
                         if (destinationMarker) {
-                            let startLocation = customerMarker.getPosition();
-                            let enLocation = destinationMarker.getPosition();
+                            let startLocation = customerMarker.getLatLng();
+                            let endLocation = destinationMarker.getLatLng();
 
-                            calculateAndDisplayRoute(startLocation, enLocation);
+                            calculateDistanceTrip(startLocation, endLocation);
                         }
                     },
                     () => {
-                        handleLocationError(true, infowindow, map.getCenter());
+                        handleLocationError(true, map.getCenter());
                     }
                 );
             } else {
-                // Trình duyệt không hỗ trợ Geolocation
-                handleLocationError(false, infowindow, map.getCenter());
+                // Browser doesn't support Geolocation
+                handleLocationError(false, map.getCenter());
             }
         });
 
-        // sự kiện khi người dùng nhấn vào nút tìm kiếm địa điểm sẽ suggestion những địa điểm
+        // Autocomplete for destination input
         const destinationInput = document.querySelector(".destination-input");
-        autocomplete = new google.maps.places.Autocomplete(destinationInput);
-        autocomplete.bindTo("bounds", map);
-        autocomplete.addListener("place_changed", onPlaceChanged);
+        destinationInput.addEventListener("input", () => {
+            searchPlace(destinationInput.value);
+        });
     }
 }
 
 function mapClick() {
-    map.addListener("click", (event) => {
-        placeMarker(event.latLng);
-        reverseGeocode(geocoder, event.latLng, infowindow);
+    map.on("click", (event) => {
+        placeMarker(event.latlng);
+        reverseGeocode(event.latlng);
     });
 }
 
 function placeMarker(location, customerMarkerEvent = false) {
     if (customerMarkerEvent) {
-        customerMarker = new google.maps.Marker({
-            position: location,
-            map: map,
-        });
+        if (customerMarker) {
+            map.removeLayer(customerMarker);
+        }
+        customerMarker = L.marker(location).addTo(map);
     } else {
         if (destinationMarker) {
-            destinationMarker.setMap(null);
+            map.removeLayer(destinationMarker);
         }
-        // Tạo marker mới
-        destinationMarker = new google.maps.Marker({
-            position: location,
-            map: map,
-            icon: {
-                path: google.maps.SymbolPath.CIRCLE,
-                fillColor: "#00FF00", // Màu sắc fill
-                fillOpacity: 1, // Độ mờ của fill
-                strokeColor: "#000000", // Màu sắc đường viền
-                strokeWeight: 2, // Độ rộng của đường viền
-                scale: 8, // Kích thước của destinationMarker
-            },
-        });
+        // Create a new marker
+        destinationMarker = L.marker(location, {
+            icon: L.divIcon({
+                className: "custom-marker",
+                html: '<div style="background-color: #00FF00; width: 16px; height: 16px; border-radius: 50%; border: 2px solid black;"></div>',
+                iconSize: [20, 20],
+                iconAnchor: [10, 10],
+            }),
+        }).addTo(map);
 
         if (customerMarker) {
-            let startLocation = customerMarker.getPosition();
-            let enLocation = destinationMarker.getPosition();
+            let startLocation = customerMarker.getLatLng();
+            let endLocation = destinationMarker.getLatLng();
 
-            calculateAndDisplayRoute(startLocation, enLocation);
+            calculateDistanceTrip(startLocation, endLocation);
         }
     }
 }
 
-function reverseGeocode(geocoder, location, infowindow) {
-    geocoder.geocode({ location: location }, (results, status) => {
-        if (status === "OK") {
-            if (results[0]) {
-                infowindow.setContent(results[0].formatted_address);
-                infowindow.setPosition(location);
-                infowindow.open(map);
-            } else {
-                console.error("No results found");
-            }
-        } else {
-            console.error("Geocoder failed due to: " + status);
-        }
-    });
+async function reverseGeocode(location) {
+    const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${location[0]}&lon=${location[1]}`;
+    const response = await fetch(url);
+    const data = await response.json();
+    if (data) {
+        infowindow = data.display_name;
+        console.log("Address: " + infowindow);
+    } else {
+        console.error("No results found");
+    }
 }
 
-function handleLocationError(browserHasGeolocation, infowindow, pos) {
-    infowindow.setPosition(pos);
-    infowindow.setContent(
+function handleLocationError(browserHasGeolocation, pos) {
+    console.error(
         browserHasGeolocation
             ? "Error: The Geolocation service failed."
             : "Error: Your browser doesn't support geolocation."
     );
-    infowindow.open(map);
 }
 
-function calculateAndDisplayRoute(start, end) {
-    const request = {
-        origin: start,
-        destination: end,
-        travelMode: "DRIVING", // Bạn có thể thay đổi travelMode tùy thuộc vào yêu cầu của bạn
-    };
+function calculateDistanceTrip(start, end) {
+    const R = 6371; // Radius of the Earth in kilometers
+    const lat1 = (start.lat * Math.PI) / 180;
+    const lon1 = (start.lng * Math.PI) / 180;
+    const lat2 = (end.lat * Math.PI) / 180;
+    const lon2 = (end.lng * Math.PI) / 180;
 
-    directionsService.route(request, (result, status) => {
-        if (status === "OK") {
-            // Hiển thị đường đi trên bản đồ
-            directionsRenderer.setMap(map);
-            directionsRenderer.setDirections(result);
+    const dLat = lat2 - lat1;
+    const dLon = lon2 - lon1;
 
-            // Lấy thông tin về quãng đường
-            const route = result.routes[0];
-            // Lấy thông tin về khoảng cách
-            const distance = route.legs.reduce((total, leg) => total + leg.distance.value, 0 );
-            // Chuyển đổi khoảng cách từ mét sang kilômét
-            const distanceInKm = distance / 1000;
-            // Hiển thị khoảng cách
-            console.log("Khoảng cách: " + distanceInKm + " km");
-        } else {
-            console.error("Directions request failed due to " + status);
-        }
-    });
+    const a =
+        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.cos(lat1) *
+            Math.cos(lat2) *
+            Math.sin(dLon / 2) *
+            Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+    const distance = R * c;
+    console.log("Distance: " + distance + " km");
+    return distance;
 }
 
-function onPlaceChanged() {
-    const place = autocomplete.getPlace();
-
-    if (!place.geometry) {
-        // Place details not found for the current input.
+async function searchPlace(locationName) {
+    if (!customerMarker) {
+        console.error("Không có vị trí hiện tại. Vui lòng đặt điểm đi trước.");
         return;
     }
 
-    // Clear previous marker
-    if (destinationMarker) {
-        destinationMarker.setMap(null);
-    }
+    const customerLocation = customerMarker.getLatLng();
+    const customerLat = customerLocation.lat;
+    const customerLng = customerLocation.lng;
 
-    // Create a new marker for the selected place
-    destinationMarker = new google.maps.Marker({
-        position: place.geometry.location,
-        map: map,
-        icon: {
-            path: google.maps.SymbolPath.CIRCLE,
-            fillColor: "#00FF00",
-            fillOpacity: 1,
-            strokeColor: "#000000",
-            strokeWeight: 2,
-            scale: 8,
-        },
-    });
+    const url = `https://photon.komoot.io/api/?q=${encodeURIComponent(
+        locationName
+    )}&limit=10`;
 
-    // Pan to the selected place on the map
-    map.panTo(place.geometry.location);
+    try {
+        const response = await fetch(url);
+        if (!response.ok)
+            throw new Error(`HTTP error! status: ${response.status}`);
 
-    // Display additional information in the infowindow (if needed)
-    infowindow.setContent(
-        `<strong>${place.name}</strong><br>${place.formatted_address}`
-    );
-    infowindow.open(map, destinationMarker);
+        const data = await response.json();
 
-    // Calculate and display the route
-    if (customerMarker) {
-        var startLocaltion = customerMarker.getPosition();
-        calculateAndDisplayRoute(startLocaltion, place.geometry.location);
-    }
-}
+        if (data.features && data.features.length > 0) {
+            const sortedResults = data.features
+                .map((feature) => {
+                    const [lon, lat] = feature.geometry.coordinates;
+                    const distance = calculateDistanceTrip(
+                        { lat: customerLat, lng: customerLng },
+                        { lat: lat, lng: lon }
+                    );
+                    return { ...feature, distance };
+                })
+                .sort((a, b) => a.distance - b.distance);
 
-function searchPlace(locationName) {
-    // Tạo một đối tượng PlacesService
-    const placesService = new google.maps.places.PlacesService(map);
+            const nearest = sortedResults[0];
+            const [nearestLon, nearestLat] = nearest.geometry.coordinates;
+            const nearestLocation = [nearestLat, nearestLon];
 
-    // Sử dụng PlacesService để tìm kiếm địa điểm
-    placesService.textSearch({ query: locationName }, (results, status) => {
-        if (status === google.maps.places.PlacesServiceStatus.OK) {
-            // Lấy địa điểm đầu tiên từ kết quả
-            const place = results[0];
-
-            // Hiển thị địa điểm trên bản đồ
-            map.setCenter(place.geometry.location);
-
-            placeMarker(place.geometry.location);
-
-            // Hiển thị thông tin về địa điểm (tùy chọn)
-            infowindow.setContent(
-                `<strong>${place.name}</strong><br>${place.formatted_address}`
-            );
-
-            infowindow.open(map, destinationMarker);
+            map.setView(nearestLocation, 18);
+            placeMarker(nearestLocation);
         } else {
-            console.error("Place search failed due to " + status);
+            console.error("Không tìm thấy địa điểm nào.");
         }
-    });
+    } catch (err) {
+        console.error("Lỗi khi tìm kiếm địa điểm:", err);
+    }
 }
 
 function getCustomerMarker() {
@@ -282,38 +228,28 @@ function getDestinationMarker() {
     });
 }
 
-function calculateDistanceTrip(start, end) {
-    const request = {
-        origin: start,
-        destination: end,
-        travelMode: "DRIVING", // Bạn có thể thay đổi travelMode tùy thuộc vào yêu cầu của bạn
-    };
+async function getReverseGeocode(location) {
+    const apiKey = "138075682dd94e819ef8bcd93bbd1b8e";
+    const url = `https://api.geoapify.com/v1/geocode/reverse?lat=${
+        location.lat || location[0]
+    }&lon=${location.lng || location[1]}&apiKey=${apiKey}`;
 
-    return new Promise((resolve, reject) => {
-        directionsService.route(request, (result, status) => {
-            if (status === "OK") {
-                // Lấy thông tin về quãng đường
-                const route = result.routes[0];
-                // Lấy thông tin về khoảng cách
-                const distance = route.legs.reduce((total, leg) => total + leg.distance.value, 0 );
-                // Chuyển đổi khoảng cách từ mét sang kilômét
-                const distanceInKm = distance / 1000;
-                resolve(distanceInKm);
-            }
-        });
-    });
-}
+    try {
+        const response = await fetch(url);
+        const data = await response.json();
 
-function getReverseGeocode(location) {
-    return new Promise((resolve, reject) => {
-        geocoder.geocode({ location: location }, (results, status) => {
-            if (status === "OK" && results[0]) {
-                resolve(results[0].formatted_address);
-            } else {
-                reject("Reverse geocode failed");
-            }
-        });
-    });
+        // Kiểm tra kết quả và trả về tên địa điểm
+        if (data && data.features && data.features.length > 0) {
+            const name = data.features[0].properties.formatted;
+            return name || "Không xác định";
+        } else {
+            console.error("Không có kết quả reverse geocode.");
+            return "Không xác định";
+        }
+    } catch (error) {
+        console.error("Lỗi reverse geocode:", error);
+        return "Không xác định";
+    }
 }
 
 export {

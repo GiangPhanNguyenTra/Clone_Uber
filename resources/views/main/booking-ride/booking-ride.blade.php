@@ -59,7 +59,8 @@
     <div class="content__main container content__main-container" style="justify-content: center;">
         <div class="row">
             <div class="map-landing col l-7 m-12 c-12">
-                <div id="map"></div>
+            <div id="map" style="width: 100%; height: 400px;"></div>
+
             </div>
             @if (Auth::guard('customer')->user()->is_on_ride)
                 <div class="map-infomation col l-5 m-12 c-12">

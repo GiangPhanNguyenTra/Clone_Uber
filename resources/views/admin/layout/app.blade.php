@@ -32,6 +32,9 @@
     <meta name="description" content="" />
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+    
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="admins/assets/img/icons/brands/chaai-logo2.png" />
 
