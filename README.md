@@ -3,7 +3,7 @@
 1. Clone the repo
 
 ```sh
-   git clone https://github.com/ptduy14/ride-hailing-service-web-app.git
+   git clone https://github.com/GiangPhanNguyenTra/Clone_Uber.git
 ```
 
 2. Compose
