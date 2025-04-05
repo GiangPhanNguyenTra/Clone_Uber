@@ -3,13 +3,21 @@ let customerMarker;
 let destinationMarker;
 let infowindow;
 
-function initMap(startLocation = null, endLocation = null, readOnly = null) {
+function initMap(
+    startLocation = null,
+    endLocation = null,
+    readOnly = null,
+    driverLocation = null
+) {
     // Set initial coordinates for Ho Chi Minh City
     const hoChiMinhCoordinates = [10.7769, 106.7009];
 
+    // Nếu có driverLocation, dùng tọa độ của driver, nếu không thì dùng mặc định
+    const coordinates = driverLocation || startLocation || hoChiMinhCoordinates;
+
     // Create Leaflet map
     map = L.map("map", {
-        center: hoChiMinhCoordinates,
+        center: coordinates,
         zoom: 18,
     });
 
@@ -20,6 +28,7 @@ function initMap(startLocation = null, endLocation = null, readOnly = null) {
     }).addTo(map);
 
     if (readOnly) {
+        // Disable map interaction for read-only mode
         map.dragging.disable();
         map.touchZoom.disable();
         map.doubleClickZoom.disable();
@@ -27,14 +36,15 @@ function initMap(startLocation = null, endLocation = null, readOnly = null) {
         map.boxZoom.disable();
         map.keyboard.disable();
 
+        // Place the markers for start and end locations
         placeMarker(startLocation, true);
         placeMarker(endLocation);
     } else {
-        // Get current customer location
+        // Handle getting the current customer location
         const getCurrentCustomerLocation =
             document.querySelector(".customer-location");
         getCurrentCustomerLocation.addEventListener("click", () => {
-            // Try HTML5 geolocation
+            // Try HTML5 geolocation to get the user's current position
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(
                     (position) => {
@@ -46,7 +56,7 @@ function initMap(startLocation = null, endLocation = null, readOnly = null) {
                         map.setView(pos, 18);
                         placeMarker(pos, true);
 
-                        // Get address from location
+                        // Get address from location (reverse geocode)
                         reverseGeocode(pos);
 
                         if (destinationMarker) {
@@ -252,6 +262,19 @@ async function getReverseGeocode(location) {
     }
 }
 
+function enableCustomerMarkerAdjust() {
+    map.off("click");
+
+    map.on("click", async (event) => {
+        const latlng = event.latlng;
+        placeMarker(latlng, true);
+
+        const address = await getReverseGeocode(latlng);
+        document.querySelector(".current-location").innerHTML =
+            "Địa chỉ hiện tại: " + address;
+    });
+}
+
 export {
     initMap,
     searchPlace,
@@ -260,4 +283,5 @@ export {
     calculateDistanceTrip,
     getReverseGeocode,
     mapClick,
+    enableCustomerMarkerAdjust,
 };

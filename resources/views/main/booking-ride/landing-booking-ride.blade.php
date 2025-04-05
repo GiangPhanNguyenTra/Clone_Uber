@@ -87,5 +87,13 @@
         </div>
     </div>
 </div>
+<script>
+    window.driverLocation = {
+        lat: @json(Auth::guard('driver')->user()->current_location_lat),
+        lng: @json(Auth::guard('driver')->user()->current_location_lng),
+    };
+    console.log(window.driverLocation);
+</script>
+
 <script type="module" src="/main/js/landing-booking-ride.js" defer></script>
 @endsection

@@ -1,11 +1,13 @@
 var driverId = document.getElementById("driver-id");
-var customerId = document.getElementById('customer-id');
+var customerId = document.getElementById("customer-id");
 var confirmModel = document.querySelector(".confirm-model");
 var confirmModeContent = confirmModel.querySelector(".model-content");
 var notifierOverlay = document.querySelector(".notifier-overlay");
 var notifierFixed = document.querySelector(".notifier-fixed ");
-var noticesCount = document.querySelectorAll('.cart-count');
-var loaderWaitingContainer = document.querySelector(".loader-waiting-container");
+var noticesCount = document.querySelectorAll(".cart-count");
+var loaderWaitingContainer = document.querySelector(
+    ".loader-waiting-container"
+);
 
 const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
 
@@ -13,7 +15,7 @@ const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
 Pusher.logToConsole = true;
 
 // khởi tạo pusher
-var pusher = new Pusher("ec75a361ce3c349e5a19", {
+var pusher = new Pusher("0752bde8649099fefb12", {
     cluster: "ap1",
 });
 
@@ -21,9 +23,8 @@ if (driverId) {
     // khởi tạo kênh
     var channel = pusher.subscribe("booking-ride-channel." + driverId.value);
 
-    // lắng nghe sự kiện    
+    // lắng nghe sự kiện
     channel.bind("new-booking-ride", function (data) {
-
         const driverId = data.driverId;
         const ride = data.ride;
         const customer = data.customer;
@@ -44,7 +45,7 @@ if (driverId) {
                     <p>Tổng tiền: ${ride.price} vnd</p>
                     <p>*Vui lòng gọi điện khách hàng để xác nhận cuốc xe trước khi bắt đầu đến điểm đón khách</p>
                     <a style="margin-top: 20px" href="/driver/accept/booking-ride/${ride.ride_id}" class="submit-btn">Xác nhận</a>`;
-        
+
         var htmlNoti = `<div class="notification -info">
                             <h3 class="notification-header">Bạn có cuốc xe mới !!!</h3>
                             <p class="notification-header">
@@ -54,7 +55,10 @@ if (driverId) {
                         </div>`;
 
         notifierFixed.innerHTML = htmlNoti;
-        localStorage.setItem('booking-notice', '/driver/accept/booking-ride/'+driverId);
+        localStorage.setItem(
+            "booking-notice",
+            "/driver/accept/booking-ride/" + driverId
+        );
         defaultCheckNotification();
         confirmModeContent.innerHTML = html;
         notifierOverlay.classList.add("active");
@@ -71,33 +75,41 @@ if (customerId) {
         const ride = data.ride;
         const driver = data.driver;
         const vehicle = data.vehicle;
-        
-        if (loaderWaitingContainer) {
-            loaderWaitingContainer.style.display = 'none';
 
-            var mapInfomation = document.querySelector('.map-infomation');
+        if (loaderWaitingContainer) {
+            loaderWaitingContainer.style.display = "none";
+
+            var mapInfomation = document.querySelector(".map-infomation");
             var html = `<h2>Thông tin về chuyến xe</h2>
                         <p>Điểm đi: ${ride.start_location_name}</p>
                         <p>Điểm đến: ${ride.end_location_name}</p>
                         <p class="distance">Quãng đường: ${ride.distance} Km</p>
                         <p class="price">Tổng tiền: ${ride.price} vnđ</p>
-                        <p class="price">Trạng thái: ${ride.status_description}</p>
+                        <p class="price">Trạng thái: ${
+                            ride.status_description
+                        }</p>
                         <h2>Thông tin tài xế</h2>
                         <p>Họ tên: ${driver.name}</p>
                         <p>Số điện thoại: ${driver.phone}</p>
                         <p>Ảnh đại diện: </p>
                         <div class="img-user">
                         <div class="img-user">
-                            <img src="${driver.avata !== null ? `http://localhost:8000/upload/images/driver-avata/${driver.avata}` : 'https://pbs.twimg.com/media/EbNX_erVcAUlwIx.jpg:large'}" alt="">
+                            <img src="${
+                                driver.avata !== null
+                                    ? `http://localhost:8000/upload/images/driver-avata/${driver.avata}`
+                                    : "https://pbs.twimg.com/media/EbNX_erVcAUlwIx.jpg:large"
+                            }" alt="">
                         </div>
                         <h2>Thông phương tiện di chuyển</h2>
-                        <p class="distance">Biển số xe: ${vehicle.license_plates}</p>
+                        <p class="distance">Biển số xe: ${
+                            vehicle.license_plates
+                        }</p>
                         <p class="price">Thương hiệu: ${vehicle.brand}</p>
                         <p class="price">Màu sắc: ${vehicle.color}</p>
                         <p class="price">Tên xe: ${vehicle.model_code}</p>`;
-            
+
             mapInfomation.innerHTML = html;
-            mapInfomation.style.height = 'auto';
+            mapInfomation.style.height = "auto";
             confirmModeContent.innerHTML = `<p>Chuyến đi của bạn đã được tài xế chấp thuận</p>
                                             <a style="margin-top: 20px" href="/customer/booking-ride">Xem chi tiết</a>`;
             notifierOverlay.classList.add("active");
@@ -109,7 +121,7 @@ if (customerId) {
     channel.bind("complete-booking-ride", function (data) {
         var customerId = data.customerId;
         var ride = data.ride;
-        var driver = data.driver
+        var driver = data.driver;
         confirmModeContent.innerHTML = `<form action="/customer/rating/booking-ride" method="post">
                                         <input type="hidden" name="_token" value="${csrfToken}">
                                         <h4>Chuyến đi của bạn vừa hoàn thành. Hãy nêu cảm nghĩ của bạn về chuyến xe này nhé !!</h4>
@@ -235,5 +247,7 @@ notifierOverlay.onclick = () => {
 
 function defaultCheckNotification() {
     console.log(notifierFixed.children.length);
-    noticesCount.forEach((item) => {item.innerHTML= '(' + notifierFixed.children.length + ')'});
+    noticesCount.forEach((item) => {
+        item.innerHTML = "(" + notifierFixed.children.length + ")";
+    });
 }
