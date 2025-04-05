@@ -117,7 +117,7 @@ if (!startLocationLat) {
                 <input type="hidden" name="end_location_lng" value="${destinationLng}">
                 <p>Quãng đường: ${roundedDistance} km</p>
                 <input type="hidden" name="distance" value="${roundedDistance}">
-                <p>Tổng tiền: ${price} vnd</p>
+                <p>Tổng tiền: ${price} VND</p>
                 <input type="hidden" name="price" value="${price}">
                 <button style="margin-top: 20px" type="submit" class="submit-btn">Xác nhận</button>
             </form>`;

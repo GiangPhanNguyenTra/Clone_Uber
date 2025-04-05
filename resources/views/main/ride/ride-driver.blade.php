@@ -33,8 +33,8 @@
                                     <span>{{$ride->ride_id}}</span>
                                 </td>
                                 <td class="order-reciver">{{$ride->customer->id}}</td>
-                                <td class="order-money">{{$ride->distance}} Km</td>
-                                <td class="order-date">{{$ride->price}} VNĐ</td>
+                                <td class="order-money">{{$ride->distance}} km</td>
+                                <td class="order-date">{{$ride->price}} VND</td>
                                 @if ($ride->status_code === 1)
                                     <td class="order-status" style="color: rgb(255, 0, 0); font-weight:bold">{{$ride->status_description}}</td>
                                 @elseif ($ride->status_code === 2)

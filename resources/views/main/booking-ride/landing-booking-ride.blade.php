@@ -79,7 +79,7 @@
                         <input type="hidden" value="{{$ride->end_location_lat}}" class="end_location_lat">
                         <input type="hidden" value="{{$ride->end_location_lng}}" class="end_location_lng">
                         <p>Quãng đường: {{$ride->distance}} km</p>
-                        <p>Giá: {{$ride->price}} VNĐ</p>
+                        <p>Giá: {{$ride->price}} VND</p>
                         <p>*Lưu ý chỉ nhấn nút khi đã hoàn thành cuốc xe</p>
                         <a class="btn btn-intro" href="/driver/complete/booking-ride/{{$ride->ride_id}}">Xác nhận hoàn thành</a>
                     @endif

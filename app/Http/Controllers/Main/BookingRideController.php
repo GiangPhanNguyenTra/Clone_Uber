@@ -76,7 +76,7 @@ class BookingRideController extends Controller
                 'end_location_lat' => $request->input('end_location_lat'),
                 'end_location_lng' => $request->input('end_location_lng'),
                 'distance' => $request->input('distance'),
-                'price' => $request->input('distance') * 8.000,
+                'price' => $request->input('distance') * 8000,
                 'status_code' => RideStatus::WAITING,
                 'status_description' => RideStatus::getDescription(RideStatus::WAITING),
                 'customer_id' => Auth::guard('customer')->user()->id,
@@ -133,7 +133,7 @@ class BookingRideController extends Controller
         }
         
         return response()->json([
-            'message' => 'ok em ơi',
+            'message' => 'Cập nhật vị trí tài xế thành công',
         ]);
     }
 

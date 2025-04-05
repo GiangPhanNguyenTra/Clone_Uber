@@ -33,11 +33,11 @@
                 </tr>
                 <tr>
                     <th>Quãng đường: </th>
-                    <td>{{$ride->distance}} Km</td>
+                    <td>{{$ride->distance}} km</td>
                 </tr>
                 <tr>
                     <th>Tổng tiền: </th>
-                    <td>{{$ride->price}} VNĐ</td>
+                    <td>{{$ride->price}} VND</td>
                 </tr>
                 <tr>
                     <th>Trạng thái: </th>

@@ -42,7 +42,7 @@ if (driverId) {
                     <p>Điểm đón: ${ride.start_location_name}</p>
                     <p>Điểm đến: ${ride.end_location_name}</p>
                     <p>Quãng đường: ${ride.distance} km</p>
-                    <p>Tổng tiền: ${ride.price} vnd</p>
+                    <p>Tổng tiền: ${ride.price} VND</p>
                     <p>*Vui lòng gọi điện khách hàng để xác nhận cuốc xe trước khi bắt đầu đến điểm đón khách</p>
                     <a style="margin-top: 20px" href="/driver/accept/booking-ride/${ride.ride_id}" class="submit-btn">Xác nhận</a>`;
 
@@ -84,7 +84,7 @@ if (customerId) {
                         <p>Điểm đi: ${ride.start_location_name}</p>
                         <p>Điểm đến: ${ride.end_location_name}</p>
                         <p class="distance">Quãng đường: ${ride.distance} Km</p>
-                        <p class="price">Tổng tiền: ${ride.price} vnđ</p>
+                        <p class="price">Tổng tiền: ${ride.price} VND</p>
                         <p class="price">Trạng thái: ${
                             ride.status_description
                         }</p>
